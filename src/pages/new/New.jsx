@@ -3,10 +3,36 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const New = ({ inputs, title }) => {
+  const navigate=useNavigate();
   const [file, setFile] = useState("");
+  const [info,setinfo]=useState({});
+  const handlechange=(e)=>{
+    setinfo(prev=>({...prev,[e.target.id]:e.target.value}))
+  };
+const handleclick= async (e) => {
+  e.preventDefault();
+const data=new FormData();
+data.append("file",file);
+data.append("upload_preset","upload")
 
+try {
+ const uploadres=await axios.post("https://api.cloudinary.com/v1_1/dhzh0vxzv/image/upload",data)
+ const {url}=uploadres.data
+ 
+  const newuser={
+    ...info,img:url
+  }
+  console.log(newuser);
+  await axios.post("https://booking-backend-6nn8.onrender.com/auth/register",newuser)
+navigate("/users")
+} catch (error) {
+  console.log(error);
+}
+}
   return (
     <div className="new">
       <Sidebar />
@@ -43,10 +69,10 @@ const New = ({ inputs, title }) => {
               {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input type={input.type} placeholder={input.placeholder} />
+                  <input onChange={handlechange} type={input.type} placeholder={input.placeholder}  id={input.id}/>
                 </div>
               ))}
-              <button>Send</button>
+              <button onClick={handleclick}>Send</button>
             </form>
           </div>
         </div>

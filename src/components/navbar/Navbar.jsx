@@ -8,10 +8,19 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext copy";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const { dispatch } = useContext(DarkModeContext);
-
+  const { dispatchh } = useContext(DarkModeContext);
+ const navigate=useNavigate();
+ const{dispatch }= useContext(AuthContext);
+const {user}=useContext(AuthContext)
+const handlelogout=()=>{
+  
+  dispatch({type:"LOGOUT"})
+  navigate("/login")
+}
   return (
     <div className="navbar">
       <div className="wrapper">
@@ -24,10 +33,13 @@ const Navbar = () => {
             <LanguageOutlinedIcon className="icon" />
             English
           </div>
+         <>{ user && <div className="item">
+            <button onClick={handlelogout}>Logout</button>
+          </div>}</>
           <div className="item">
             <DarkModeOutlinedIcon
               className="icon"
-              onClick={() => dispatch({ type: "TOGGLE" })}
+              onClick={() => dispatchh({ type: "TOGGLE" })}
             />
           </div>
           <div className="item">
